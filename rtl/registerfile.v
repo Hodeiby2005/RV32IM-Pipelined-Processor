@@ -16,7 +16,7 @@ reg [31:0] rf [0:31];
 integer i;
 
 // Synchronous write and reset
-always @(posedge clk or posedge reset) begin
+    always @(negedge clk or posedge reset) begin
     if (reset) begin
         for (i = 0; i < 32; i = i + 1)
             rf[i] <= 32'd0;
