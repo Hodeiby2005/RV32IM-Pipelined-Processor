@@ -7,11 +7,20 @@ module pc(
     output reg [31:0] pc
 );
 
+reg started;
+
 always @(posedge clk or posedge reset) begin
-    if (reset)
+    if (reset) begin
         pc <= 32'd0;
-    else
+        started <= 1'b0;
+    end
+    else if (!started) begin
+        started <= 1'b1;
+        pc <= 32'd0;
+    end
+    else begin
         pc <= nextpc;
+    end
 end
 
 endmodule
