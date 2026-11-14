@@ -280,7 +280,7 @@ wire [4:0] WB_Rd;
 wire WB_RegWrite;
 
 registerfile Registers (
-    .clk(slwclk),
+    .clk(clk),
     .reset(reset),
     .rs1(Instruction[19:15]),
     .rs2(Instruction[24:20]),
