@@ -1,0 +1,28 @@
+
+# Vivado generated files
+.Xil/
+*.cache/
+*.runs/
+*.sim/
+*.hw/
+*.ip_user_files/
+*.gen/
+
+# Vivado logs and journals
+*.jou
+*.log
+*.backup.jou
+*.backup.log
+*.str
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Generated simulation waveforms
+*.wdb
+*.vcd
+
+# Generated checkpoints
+*.dcp
