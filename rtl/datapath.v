@@ -360,11 +360,38 @@ IFID_EXMEM PipelineReg1 (
 // STAGE 1: EXECUTION + MEMORY ACCESS
 // =====================================================
 
+// FORWARDING UNIT AND TWO 2X1 FORWARD MUXES
+wire ForwardNeeded1, ForwardNeeded2;
+wire [31:0] ForwardedRs1Data, ForwardedRs2Data;
+
+ForwardingUnit ForwardingControl (
+    .EX_Rs1(EX_Instruction[19:15]),
+    .EX_Rs2(EX_Instruction[24:20]),
+    .WB_Rd(WB_Rd),
+    .WB_RegWrite(WB_RegWrite),
+    .ForwardNeeded1(ForwardNeeded1),
+    .ForwardNeeded2(ForwardNeeded2)
+);
+
+mux2x1 ForwardMux1 (
+    .in0(EX_Rs1Data),
+    .in1(rd),
+    .sel(ForwardNeeded1),
+    .out(ForwardedRs1Data)
+);
+
+mux2x1 ForwardMux2 (
+    .in0(EX_Rs2Data),
+    .in1(rd),
+    .sel(ForwardNeeded2),
+    .out(ForwardedRs2Data)
+);
+
 // 7. ALU FIRST OPERAND MUX
 wire [31:0] ALUOperand1;
 
 mux2x1 ALUSrcSelector1 (
-    .in0(EX_Rs1Data),
+    .in0(ForwardedRs1Data),
     .in1(EX_PC),
     .sel(EX_ALUSrc1),
     .out(ALUOperand1)
@@ -375,7 +402,7 @@ mux2x1 ALUSrcSelector1 (
 wire [31:0] ALUOperand2;
 
 mux2x1 ALUSrcSelector2 (
-    .in0(EX_Rs2Data),
+    .in0(ForwardedRs2Data),
     .in1(EX_Immediate),
     .sel(EX_ALUSrc2),
     .out(ALUOperand2)
@@ -447,7 +474,7 @@ DataMemory DataMem (
     .size(size),
     .unsignedload(unsignedload),
     .addr(ALU_out[9:0]),
-    .data_in(EX_Rs2Data),
+    .data_in(ForwardedRs2Data),
     .data_out(MemData_out)
 );
 
